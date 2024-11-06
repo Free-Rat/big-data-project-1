@@ -10,7 +10,8 @@ current_price_sum = 0
 
 for line in sys.stdin:
     # Podziel dane wejściowe
-    geo_id, manufacturer, price = line.strip().split("\t")
+    key, price = line.strip().split("\t")
+    geo_id, manufacturer = key.split("|")
     price = float(price)
     
     # Sprawdź, czy przetwarzamy nowy klucz (geo_id, manufacturer)

@@ -18,7 +18,7 @@ for line in sys.stdin:
         geo_id = values[GEO_ID_COL]
         
         # Emituj klucz i wartość: klucz (geo_id, manufacturer), wartość = price
-        print(f"{geo_id}\t{manufacturer}\t{price}")
+        print(f"{geo_id}|{manufacturer}\t{price}")
     
     except ValueError:
         # Obsługuje potencjalne błędy w formacie danych
