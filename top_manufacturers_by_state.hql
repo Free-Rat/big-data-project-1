@@ -1,3 +1,8 @@
+DROP TABLE IF EXISTS mapreduce_output;
+DROP TABLE IF EXISTS datasource4;
+DROP TABLE IF EXISTS state_manufacturer_avg_price;
+DROP TABLE IF EXISTS top_3_manufacturers_by_state;
+
 -- Create mapreduce_output table
 CREATE TABLE mapreduce_output (
     geo_id INT,
@@ -20,10 +25,10 @@ ROW FORMAT DELIMITED
 FIELDS TERMINATED BY '^';
 
 -- Load data into mapreduce_output table
-LOAD DATA INPATH 'path/to/mapreduce_output.txt' INTO TABLE mapreduce_output;
+LOAD DATA INPATH '/user/lawicki02/output/part-*' INTO TABLE mapreduce_output;
 
 -- Load data into datasource4 table
-LOAD DATA INPATH 'path/to/datasource4.txt' INTO TABLE datasource4;
+LOAD DATA INPATH '/user/lawicki02/input/datasource4/*' INTO TABLE datasource4;
 
 -- Create state_manufacturer_avg_price table
 CREATE TABLE state_manufacturer_avg_price AS
@@ -60,4 +65,3 @@ WHERE rank <= 3;
 
 -- Display the result
 SELECT * FROM top_3_manufacturers_by_state;
-

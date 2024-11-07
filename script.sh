@@ -22,4 +22,4 @@ echo "
 beeline -n \${USER} -u jdbc:hive2://localhost:10000/default -f top_manufacturers_by_state.hql
 " > hive.sh
 sudo chmod +x hive.sh
-./hive	
+./hive.sh
