@@ -72,7 +72,7 @@ with DAG(
   hive = BashOperator(
     task_id="hive",
     bash_command="""beeline -u jdbc:hive2://localhost:10000/default \
-      -f {{ params.dags_home }}/project_files/transform5.hql \
+      -f {{ params.dags_home }}/project_files/top_manufacturers_by_state.hql \
       --hivevar input_dir1={{ params.output_mr_dir }} \
       --hivevar input_dir4={{ params.input_dir }}/datasource4 \
       --hivevar output_dir6={{ params.output_dir }}""",
