@@ -49,15 +49,13 @@ with DAG(
   hadoop_streaming = BashOperator(
     task_id="hadoop_streaming",
     bash_command="""mapred streaming \
--files {{ params.dags_home }}/project_files/mapper2.py,\
-{{ params.dags_home }}/project_files/combiner2.py,\
-{{ params.dags_home }}/project_files/reducer2.py \
+-files {{ params.dags_home }}/project_files/mapper.py,\
+{{ params.dags_home }}/project_files/reducer.py \
 -input {{ params.input_dir }}/datasource1 \
--mapper  mapper2.py \
--combiner combiner2.py \
--reducer reducer2.py \
+-mapper  mapper.py \
+-reducer reducer.py \
 -output {{ params.output_mr_dir }} \
-... """,
+""",
   )
 
   def _pick_pig_or_hive():
@@ -76,7 +74,7 @@ with DAG(
     bash_command="""beeline -u jdbc:hive2://localhost:10000/default \
       -f {{ params.dags_home }}/project_files/transform5.hql \
       --hivevar input_dir4={{ params.input_dir }}/datasource4 \
-      --hivevar input_dir3={{ params.output_mr_dir }} \
+      --hivevar input_dir1={{ params.output_mr_dir }} \
       --hivevar output_dir6={{ params.output_dir }}""",
   )
 
@@ -101,5 +99,4 @@ with DAG(
   [mapreduce_classic, hadoop_streaming] >> pick_pig_or_hive
   pick_pig_or_hive >> [pig, hive]
   [pig, hive] >> get_output
-  
   

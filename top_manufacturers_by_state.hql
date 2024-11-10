@@ -14,7 +14,7 @@ CREATE EXTERNAL TABLE mapreduce_output (
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY '\t'
 STORED AS TEXTFILE
-location '/user/lawicki02/output';
+location '${input_dir1}';
 
 -- Create datasource4 table
 CREATE EXTERNAL TABLE datasource4 (
@@ -27,7 +27,7 @@ CREATE EXTERNAL TABLE datasource4 (
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY '^'
 STORED AS TEXTFILE
-location '/user/lawicki02/input/datasource4';
+location '${input_dir4}';
 
 CREATE TABLE results (
         state STRING,
@@ -37,7 +37,7 @@ CREATE TABLE results (
 ROW FORMAT SERDE
 'org.apache.hadoop.hive.serde2.JsonSerDe'
 STORED AS TEXTFILE
-LOCATION '/user/lawicki02/final';
+LOCATION '${output_dir6}';
 
 -- Create state_manufacturer_avg_price table
 WITH state_manufacturer_avg_price AS (
