@@ -6,10 +6,8 @@
 # 	--project ${PROJECT_ID} --max-age=3h
 
 # export PROJECT=bigdata-2024-10-tl;export HOSTNAME=pbd-cluster-m;export ZONE=europe-west4-a
-
 # PORT1=8080
 # PORT2=8080
-
 # gcloud compute ssh ${HOSTNAME} \
 # 	--project=${PROJECT} --zone=${ZONE}  -- \
 # 	-4 -N -L ${PORT1}:${HOSTNAME}:${PORT2}
@@ -19,23 +17,28 @@ RUN_MR=true
 RUN_HIVE=true
 
 USER="lawicki02"
-MAPREDUCE_INPUT="input/datasource1"
+BUCKET_NAME="pbd-23-tl-fr"
+
+# gs://pbd-23-tl-fr/projekt1/input
+INPUT_DIR="gs://$BUCKET_NAME/projekt1/input"
+
+MAPREDUCE_INPUT="gs://$BUCKET_NAME/projekt1/input/datasource1"
 MAPREDUCE_OUTPUT="output-mapreduce"
-HIVE_MR_INPUT="/user/$USER/$MAPREDUCE_OUTPUT"
-HIVE_DS_INPUT="/user/$USER/input/datasource4"
-HIVE_OUTPUT="/user/$USER/final"
+
+HIVE_MR_INPUT="/user/$USER/output-mapreduce"
+HIVE_DS_INPUT="gs://$BUCKET_NAME/projekt1/input/datasource4"
+HIVE_OUTPUT="gs://$BUCKET_NAME/projekt1/final"
 
 # DATA google cloude bucket 
 echo "---------------[ DATA: bucket ]---------------"
-BUCKET_NAME="pbd-23-tl-fr"
-if ! hdfs dfs -test -d /path/to/hdfs/directory || [ "$GENERATE_NEW" = true ]; then
+if ! hdfs dfs -test -d $INPUT_DIR || [ "$GENERATE_NEW" = true ]; then
   echo "The input directory does not exist in HDFS or the GENERATE_NEW variable is true."
   wget http://www.cs.put.poznan.pl/kjankiewicz/bigdata/projekty/zestaw7.zip
   unzip zestaw7
   rm zestaw7.zip
-  hadoop fs -rm -r gs://$BUCKET_NAME/input
-  hadoop fs -mkdir -p gs://$BUCKET_NAME/input
-  hadoop fs -put ./input/* gs://$BUCKET_NAME/input
+  hadoop fs -rm -r $INPUT_DIR
+  hadoop fs -mkdir -p $INPUT_DIR
+  hadoop fs -put ./input/* $INPUT_DIR
 else 
   echo "The input directory aleardy exist in hadoop"
 fi
@@ -56,7 +59,6 @@ sudo chmod +x mapper.py
 sudo chmod +x reducer.py
 
 echo "
-hadoop fs -rm -r output
 mapred streaming \
 	-files mapper.py,reducer.py \
 	-input $MAPREDUCE_INPUT \
@@ -66,13 +68,16 @@ mapred streaming \
 " > mapreduce.sh
 sudo chmod +x mapreduce.sh
 if [ "$RUN_MR" == true ]; then
+	hadoop fs -rm -r output
+  	hadoop fs -rm -r $HIVE_MR_INPUT	 
 	./mapreduce.sh
 fi
 
 #save mapreduce in bucket
 hadoop fs -rm -r gs://$BUCKET_NAME/$MAPREDUCE_OUTPUT
 hadoop fs -mkdir -p gs://$BUCKET_NAME/$MAPREDUCE_OUTPUT
-hadoop fs -put ./input/* gs://$BUCKET_NAME/$MAPREDUCE_OUTPUT
+hadoop fs -copyToLocal $MAPREDUCE_OUTPUT .
+hadoop fs -put ./$MAPREDUCE_OUTPUT gs://$BUCKET_NAME/$MAPREDUCE_OUTPUT
 
 # HIVE
 echo "---------------[ HIVE ]---------------"
@@ -96,6 +101,7 @@ fi
 echo "------------[ APACHE-AIRFLOW ]------------"
 wget https://raw.githubusercontent.com/Free-Rat/big-data-project-1/refs/heads/main/projekt1.py
 
+export AIRFLOW_HOME=~/airflow
 pip install apache-airflow
 export PATH=$PATH:~/.local/bin
 airflow db migrate

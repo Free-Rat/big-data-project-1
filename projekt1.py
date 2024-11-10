@@ -52,8 +52,8 @@ with DAG(
 -files {{ params.dags_home }}/project_files/mapper.py,\
 {{ params.dags_home }}/project_files/reducer.py \
 -input {{ params.input_dir }}/datasource1 \
--mapper  mapper.py \
--reducer reducer.py \
+-mapper \"python3 mapper.py\" \
+-reducer \"python3 reducer.py\"
 -output {{ params.output_mr_dir }} \
 """,
   )
