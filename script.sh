@@ -4,6 +4,16 @@
 # 	--num-workers 2 --worker-machine-type n2-standard-2 --worker-boot-disk-size 50 \
 # 	--image-version 2.2-debian12 \
 # 	--project ${PROJECT_ID} --max-age=3h
+#
+# gcloud dataproc clusters create ${CLUSTER_NAME} \
+# --enable-component-gateway --bucket ${BUCKET_NAME} \
+# --region ${REGION} --subnet default \
+# --master-machine-type n1-standard-4 --master-boot-disk-size 50 \
+# --num-workers 2 \
+# --worker-machine-type n1-standard-2 --worker-boot-disk-size 50 \
+# --image-version 2.1-debian11 \
+# --optional-components DOCKER \
+# --project ${PROJECT_ID} --max-age=3h
 
 # export PROJECT=bigdata-2024-10-tl;export HOSTNAME=pbd-cluster-m;export ZONE=europe-west4-a
 # PORT1=8080
