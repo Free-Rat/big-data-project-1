@@ -14,7 +14,7 @@ CREATE EXTERNAL TABLE mapreduce_output (
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY '\t'
 STORED AS TEXTFILE
-location '${input_dir1}';
+LOCATION '${input_dir1}';
 
 -- Create datasource4 table
 CREATE EXTERNAL TABLE datasource4 (
@@ -27,7 +27,7 @@ CREATE EXTERNAL TABLE datasource4 (
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY '^'
 STORED AS TEXTFILE
-location '${input_dir4}';
+LOCATION '${input_dir4}';
 
 CREATE TABLE results (
         state STRING,

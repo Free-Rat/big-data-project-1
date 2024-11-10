@@ -30,14 +30,15 @@ USER="lawicki02"
 BUCKET_NAME="pbd-23-tl-fr"
 
 # gs://pbd-23-tl-fr/projekt1/input
-INPUT_DIR="gs://$BUCKET_NAME/projekt1/input"
+PROJECT_PATH="gs://$BUCKET_NAME/projekt1"
+INPUT_DIR="$PROJECT_PATH/input"
 
-MAPREDUCE_INPUT="gs://$BUCKET_NAME/projekt1/input/datasource1"
-MAPREDUCE_OUTPUT="output-mapreduce"
+MAPREDUCE_INPUT="$INPUT_DIR/datasource1"
+MAPREDUCE_OUTPUT="$PROJECT_PATH/output-mapreduce"
 
-HIVE_MR_INPUT="/user/$USER/output-mapreduce"
-HIVE_DS_INPUT="gs://$BUCKET_NAME/projekt1/input/datasource4"
-HIVE_OUTPUT="gs://$BUCKET_NAME/projekt1/final"
+HIVE_MR_INPUT="$PROJECT_PATH/output-mapreduce"
+HIVE_DS_INPUT="$INPUT_DIR/datasource4"
+HIVE_OUTPUT="$PROJECT_PATH/final"
 
 # DATA google cloude bucket 
 echo "---------------[ DATA: bucket ]---------------"
@@ -84,10 +85,10 @@ if [ "$RUN_MR" == true ]; then
 fi
 
 #save mapreduce in bucket
-hadoop fs -rm -r gs://$BUCKET_NAME/$MAPREDUCE_OUTPUT
-hadoop fs -mkdir -p gs://$BUCKET_NAME/$MAPREDUCE_OUTPUT
-hadoop fs -copyToLocal $MAPREDUCE_OUTPUT .
-hadoop fs -put ./$MAPREDUCE_OUTPUT gs://$BUCKET_NAME/$MAPREDUCE_OUTPUT
+# hadoop fs -rm -r gs://$BUCKET_NAME/$MAPREDUCE_OUTPUT
+# hadoop fs -mkdir -p gs://$BUCKET_NAME/$MAPREDUCE_OUTPUT
+# hadoop fs -copyToLocal $MAPREDUCE_OUTPUT .
+# hadoop fs -put ./$MAPREDUCE_OUTPUT gs://$BUCKET_NAME/$MAPREDUCE_OUTPUT
 
 # HIVE
 echo "---------------[ HIVE ]---------------"
@@ -98,7 +99,7 @@ beeline \
 	-n \${USER} \
 	-u jdbc:hive2://localhost:10000/default \
     -f top_manufacturers_by_state.hql \
-    --hiveconf input_dir3='$HIVE_MR_INPUT' \
+    --hiveconf input_dir1='$HIVE_MR_INPUT' \
     --hiveconf input_dir4='$HIVE_DS_INPUT' \
     --hiveconf output_dir6='$HIVE_OUTPUT'
 " > hive.sh
