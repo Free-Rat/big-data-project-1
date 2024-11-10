@@ -99,9 +99,9 @@ beeline \
 	-n \${USER} \
 	-u jdbc:hive2://localhost:10000/default \
     -f top_manufacturers_by_state.hql \
-    --hiveconf input_dir1='$HIVE_MR_INPUT' \
-    --hiveconf input_dir4='$HIVE_DS_INPUT' \
-    --hiveconf output_dir6='$HIVE_OUTPUT'
+    --hivevar input_dir1='$HIVE_MR_INPUT' \
+    --hivevar input_dir4='$HIVE_DS_INPUT' \
+    --hivevar output_dir6='$HIVE_OUTPUT'
 " > hive.sh
 sudo chmod +x hive.sh
 if [ "$RUN_HIVE" == true ]; then
